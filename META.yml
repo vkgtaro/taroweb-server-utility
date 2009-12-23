@@ -1,5 +1,5 @@
 ---
-abstract: ~
+abstract: 'taro-web.com サーバユーティリティ'
 author:
   - 'Daisuke Komatsu <vkg.taro@gmail.com>'
 build_requires:
