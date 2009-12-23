@@ -4,6 +4,7 @@ author:
   - 'Daisuke Komatsu <vkg.taro@gmail.com>'
 build_requires:
   ExtUtils::MakeMaker: 6.42
+  File::Spec: 0
   Test::More: 0
 configure_requires:
   ExtUtils::MakeMaker: 6.42
@@ -21,6 +22,9 @@ no_index:
     - xt
 requires:
   Filter::Util::Call: 0
+  Mouse: 0
+  Mouse::Util::TypeConstraints: 0
+  Path::Class: 0
 resources:
   license: http://dev.perl.org/licenses/
 version: 0.01
