@@ -24,6 +24,11 @@ has accounts => (
     default => sub { {} }
 );
 
+has comments => (
+    is => 'rw',
+    isa => 'Str',
+);
+
 coerce 'File'
     => from 'Str'
     => via { file($_) };
@@ -38,11 +43,18 @@ sub read_virtual_file {
     my $fh = $self->virtual->openr
         or die 'can not open '.  $self->virtual;
 
+    my $comments = '';
     while ( my $line = <$fh> ) {
-        next if $line =~ /^#/;
+        if ( $line =~ /^#/ ) {
+            $comments .= $line;
+            next;
+        }
+
         my ($account, $domain, $dir) = $self->parse_line_from_virtual_file($line);
         $self->accounts->{$domain}->{$account} = $dir;
     }
+
+    $self->comments( $comments );
 
     return $self->accounts;
 }
@@ -110,6 +122,7 @@ sub write_virtual_file {
 
     my $contents = $self->as_string;
     $fh->print($contents);
+    $fh->print($self->comments);
 
     flock($fh, LOCK_UN);
     return $fh->close;

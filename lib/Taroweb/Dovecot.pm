@@ -25,6 +25,11 @@ has accounts => (
     default => sub { {} }
 );
 
+has comments => (
+    is => 'rw',
+    isa => 'Str',
+);
+
 coerce 'File'
     => from 'Str'
     => via { file($_) };
@@ -39,11 +44,18 @@ sub read_passwd_file {
     my $fh = $self->passwd_file->openr
         or die 'can not open '.  $self->passwd_file . q{:} . $!;
 
+    my $comments = '';
     while ( my $line = <$fh> ) {
-        next if $line =~ /^#/;
+        if ( $line =~ /^#/ ) {
+            $comments .= $line;
+            next;
+        }
+
         my ($account, $domain, $hashed_password) = $self->parse_line_from_passwd_file($line);
         $self->accounts->{$domain}->{$account} = $hashed_password;
     }
+
+    $self->comments( $comments );
 
     return $self->accounts;
 }
@@ -108,6 +120,7 @@ sub write_passwd_file {
 
     my $contents = $self->as_string;
     $fh->print($contents);
+    $fh->print($self->comments);
 
     flock($fh, LOCK_UN);
     return $fh->close;
