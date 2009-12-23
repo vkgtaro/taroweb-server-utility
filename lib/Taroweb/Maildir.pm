@@ -43,7 +43,7 @@ sub make_maildir {
         }
     }
 
-    return 1;
+    return $maildir;
 }
 
 __PACKAGE__;
@@ -54,15 +54,21 @@ __END__
 
 =head1 NAME
 
-Taroweb -
+Taroweb::Maildir - メールディレクトリの作成とか
 
 =head1 SYNOPSIS
 
-  use Taroweb;
+  use Taroweb::Maildir;
 
 =head1 DESCRIPTION
 
-Taroweb is
+メールディレクトリの作成とか
+
+=head1 METHODS
+
+=head2 make_maildir
+
+アカウント名を引数にとって、domain/account/Maildir/{cur,new,tmp} なディレクトリを作成
 
 =head1 AUTHOR
 
