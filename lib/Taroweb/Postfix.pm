@@ -10,17 +10,45 @@ use File::Copy;
 use Fcntl qw(:flock);
 use Path::Class;
 
-subtype 'File'
+subtype 'PostfixFile'
     => as 'Object'
     => where { $_->isa('Path::Class::File') };
 
+subtype 'PostfixLock'
+    => as 'Object'
+    => where { $_->isa('IO::File') };
+
+subtype 'MailDir'
+    => as 'Object'
+    => where { $_->isa('Path::Class::Dir') };
+
+has base_maildir => (
+    is => 'rw',
+    isa => 'MailDir',
+    coerce => 1,
+    default => '/ebs/vmail',
+);
+
+has lock_file => (
+    is => 'ro',
+    isa => 'PostfixLock',
+    coerce => 1,
+    default => 'postfix_lock',
+);
+
 has virtual => (
     is => 'rw',
-    isa => 'File',
+    isa => 'PostfixFile',
     coerce => 1,
 );
 
 has accounts => (
+    is => 'rw',
+    isa => 'HashRef',
+    default => sub { {} }
+);
+
+has new_accounts => (
     is => 'rw',
     isa => 'HashRef',
     default => sub { {} }
@@ -31,9 +59,17 @@ has comments => (
     isa => 'Str',
 );
 
-coerce 'File'
+coerce 'PostfixFile'
     => from 'Str'
     => via { file($_) };
+
+coerce 'PostfixLock'
+    => from 'Str'
+    => via { my $lock = file($_); $lock->openw; };
+
+coerce 'MailDir'
+    => from 'Str'
+    => via { dir($_) };
 
 __PACKAGE__->meta->make_immutable;
 
@@ -144,6 +180,51 @@ sub as_string {
 
     return $string;
 }
+
+sub make_maildirs {
+    my ( $self ) = @_;
+
+    my $accounts = $self->new_accounts;
+
+    my $string = '';
+    foreach my $domain ( keys %{$accounts} ) {
+        foreach my $account ( keys %{$accounts->{$domain}} ) {
+            $self->($account, $domain);
+        }
+    }
+
+    return 1;
+}
+
+sub make_maildir {
+    my ($self, $account, $domain) = @_;
+
+    my $base_dir = $self->base_dir;
+    my $maildir = dir( $base_dir, $domain, $account, 'Maildir');
+
+    foreach my $subdir ( qw/ cur tmp new / ) {
+        my $dir = $maildir->subdir($subdir);
+        eval {
+            $dir->mkpath(755);
+        };
+        if ($@) {
+            die sprintf "can not create maildir for %s@%s: %s", $account, $self->domain, $@;
+        }
+    }
+
+    return $maildir;
+}
+
+sub lock {
+    my ( $self ) = @_;
+    flock($self->lock_file, LOCK_EX);
+}
+
+sub unlock {
+    my ( $self ) = @_;
+    flock($self->lock_file, LOCK_UN);
+}
+
 
 __PACKAGE__;
 
