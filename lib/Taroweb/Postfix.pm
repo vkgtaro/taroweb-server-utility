@@ -87,7 +87,7 @@ sub read_virtual_file {
         next if $line =~ m{\A\z}xms;
 
         if ( $line =~ /^#/ ) {
-            $comments .= $line;
+            $comments .= $line . "\n";
             next;
         }
 
