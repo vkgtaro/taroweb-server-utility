@@ -205,12 +205,8 @@ sub make_maildir {
     
     foreach my $subdir ( qw/ cur tmp new / ) {
         my $dir = $maildir->subdir($subdir);
-        eval {
-            $dir->mkpath(755);
-        };
-        if ($@) {
-            die sprintf "can not create maildir for %s@%s: %s", $account, $self->domain, $@;
-        }
+        
+        $dir->mkpath(755) or die sprintf "can not create maildir for %s@%s: %s", $account, $domain, $!;
     }
 
     return $maildir;
