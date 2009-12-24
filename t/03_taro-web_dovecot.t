@@ -16,6 +16,7 @@ my $dovecot = Taroweb::Dovecot->new(
     passwd_file => $passwd_file,
 );
 
+ok $dovecot->lock();
 my $accounts = $dovecot->read_passwd_file();
 is $accounts->{'vkgtaro.jp'}->{hoge}, '{SSHA}AHJG/6ML0WKNz8SZ6x+rfKlq2H/CXj8Q';
 
@@ -23,6 +24,7 @@ my $new_address = $dovecot->add('komatsu@taro-web.com', 'p4ssw0rd');
 like $new_address, qr/^komatsu\@taro-web.com:{SSHA}/;
 
 ok $dovecot->write_passwd_file();
+ok $dovecot->unlock();
 
 my $content = $passwd_file->slurp;
 like $content, qr/^komatsu\@taro-web.com:{SSHA}/;

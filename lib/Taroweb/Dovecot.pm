@@ -15,10 +15,21 @@ subtype 'DocecotFile'
     => as 'Object'
     => where { $_->isa('Path::Class::File') };
 
+subtype 'DovecotLock'
+    => as 'Object'
+    => where { $_->isa('IO::File') };
+
 has passwd_file => (
     is => 'rw',
     isa => 'DocecotFile',
     coerce => 1,
+);
+
+has lock_file => (
+    is => 'ro',
+    isa => 'DovecotLock',
+    coerce => 1,
+    default => 'dovecot_lock',
 );
 
 has accounts => (
@@ -35,6 +46,10 @@ has comments => (
 coerce 'DocecotFile'
     => from 'Str'
     => via { file($_) };
+
+coerce 'DovecotLock'
+    => from 'Str'
+    => via { my $lock = file($_); $lock->openw; };
 
 __PACKAGE__->meta->make_immutable;
 
@@ -142,6 +157,16 @@ sub as_string {
     }
 
     return $string;
+}
+
+sub lock {
+    my ( $self ) = @_;
+    flock($self->lock_file, LOCK_EX);
+}
+
+sub unlock {
+    my ( $self ) = @_;
+    flock($self->lock_file, LOCK_UN);
 }
 
 __PACKAGE__;
