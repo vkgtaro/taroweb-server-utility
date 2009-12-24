@@ -152,7 +152,10 @@ sub as_string {
     foreach my $domain ( keys %{$accounts} ) {
         foreach my $account ( keys %{$accounts->{$domain}} ) {
 
-            $string .= sprintf "%s@%s:%s\n", $account, $domain, $accounts->{$domain}->{$account};
+            my $hashed_password = $accounts->{$domain}->{$account};
+            chomp $hashed_password;
+
+            $string .= sprintf "%s@%s:%s\n", $account, $domain, $hashed_password;
         }
     }
 
