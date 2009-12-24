@@ -2,6 +2,8 @@ package Taroweb::Dovecot;
 
 use Mouse;
 use Mouse::Util::TypeConstraints;
+use utf8;
+
 use Crypt::SaltedHash;
 use DateTime;
 use Email::Valid;

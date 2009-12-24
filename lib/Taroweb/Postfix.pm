@@ -2,6 +2,8 @@ package Taroweb::Postfix;
 
 use Mouse;
 use Mouse::Util::TypeConstraints;
+use utf8;
+
 use DateTime;
 use Email::Valid;
 use File::Copy;

@@ -2,6 +2,8 @@ package Taroweb::Maildir;
 
 use Mouse;
 use Mouse::Util::TypeConstraints;
+use utf8;
+
 use Path::Class;
 
 subtype 'Dir'

@@ -1,10 +1,13 @@
 package Taroweb;
 
-use strict;
-use warnings;
+use Mouse;
+use utf8;
 our $VERSION = '0.01';
 
-1;
+
+
+__PACKAGE__;
+
 __END__
 
 =encoding utf8
