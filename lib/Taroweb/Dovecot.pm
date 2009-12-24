@@ -11,13 +11,13 @@ use File::Copy;
 use Fcntl qw(:flock);
 use Path::Class;
 
-subtype 'File'
+subtype 'DocecotFile'
     => as 'Object'
     => where { $_->isa('Path::Class::File') };
 
 has passwd_file => (
     is => 'rw',
-    isa => 'File',
+    isa => 'DocecotFile',
     coerce => 1,
 );
 
@@ -32,7 +32,7 @@ has comments => (
     isa => 'Str',
 );
 
-coerce 'File'
+coerce 'DocecotFile'
     => from 'Str'
     => via { file($_) };
 
@@ -87,7 +87,7 @@ sub add {
         my $domain  = $2;
 
         my $csh = Crypt::SaltedHash->new( algorithm => 'SHA-1');
-        $csh->add('hoge');
+        $csh->add($password);
         my $hashed_password = $csh->generate;
         $self->accounts->{$domain}->{$account} = $hashed_password;
 
@@ -136,6 +136,7 @@ sub as_string {
     my $string = '';
     foreach my $domain ( keys %{$accounts} ) {
         foreach my $account ( keys %{$accounts->{$domain}} ) {
+
             $string .= $self->build_line($account, $domain, $accounts->{$domain}->{$account}) . "\n";
         }
     }
