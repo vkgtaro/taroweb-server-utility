@@ -83,6 +83,9 @@ sub read_virtual_file {
 
     my $comments = '';
     while ( my $line = <$fh> ) {
+        chomp $line;
+        next if $line =~ m{\A\z}xms;
+
         if ( $line =~ /^#/ ) {
             $comments .= $line;
             next;
