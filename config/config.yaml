@@ -1,0 +1,9 @@
+dovecot_passwd:  /Users/vkgtaro/Documents/works/taro-web.com/hoge/dovecot-passwd
+postfix_virtual: /Users/vkgtaro/Documents/works/taro-web.com/hoge/virtual
+base_maildir:    /Users/vkgtaro/Documents/works/taro-web.com/hoge/vmail
+# dovecot_passwd:  /etc/dovecot-passwd
+# postfix_virtual: /etc/postfix/virtual
+# base_maildir:    /ebs/vmail',
+mails:
+  taro-web.com:
+    vkgtaro: p4ssw0rd
