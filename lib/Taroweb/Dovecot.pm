@@ -152,7 +152,7 @@ sub as_string {
     foreach my $domain ( keys %{$accounts} ) {
         foreach my $account ( keys %{$accounts->{$domain}} ) {
 
-            $string .= $self->build_line($account, $domain, $accounts->{$domain}->{$account}) . "\n";
+            $string .= sprintf "%s@%s:%s\n", $account, $domain, $accounts->{$domain}->{$account};
         }
     }
 
