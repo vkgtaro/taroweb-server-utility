@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 
-package Taroweb::SetupMails;
+package Taroweb::AddMailUser;
 use Mouse;
 with 'MouseX::Getopt';
 
@@ -10,6 +10,16 @@ use Taroweb;
 use YAML::Syck;
 
 has c => (
+    is => 'rw',
+    isa => 'Str',
+);
+
+has mail => (
+    is => 'rw',
+    isa => 'Str',
+);
+
+has password => (
     is => 'rw',
     isa => 'Str',
 );
@@ -25,12 +35,7 @@ sub run {
         base_maildir         => $config->{base_maildir},
     );
     
-    foreach my $domain ( keys %{$config->{mails}} ) {
-        foreach my $account ( keys %{$config->{mails}->{$domain}} ) {
-            $taroweb->add( $account . q{@} . $domain, $config->{mails}->{$domain}->{$account});
-        }
-    }
-    
+    $taroweb->add( $self->mail, $self->password);
     $taroweb->commit();
 }
 
@@ -39,6 +44,6 @@ no Mouse;
 
 package main;
 
-Taroweb::SetupMails->new_with_options->run;
+Taroweb::AddMailUser->new_with_options->run;
 
 __END__
