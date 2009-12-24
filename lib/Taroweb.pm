@@ -37,7 +37,7 @@ sub _build_postfix {
     my ( $self ) = @_;
     my $postfix = Taroweb::Postfix->new(
         virtual => $self->postfix_virtual_file,
-        base_dir => $self->base_maildir
+        base_maildir => $self->base_maildir
     );
     $postfix->read_virtual_file();
 

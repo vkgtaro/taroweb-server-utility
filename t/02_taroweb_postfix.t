@@ -13,7 +13,7 @@ $fh->print('vkgtaro@vkgtaro.jp vkgtaro.jp/vkgtaro/Maildir');
 $fh->close;
 
 my $postfix = Taroweb::Postfix->new(
-    base_maildir => $dir,
+    base_maildir => "$dir",
     virtual => $virtual_file,
 );
 
