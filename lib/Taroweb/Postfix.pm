@@ -122,6 +122,7 @@ sub add {
         my $domain  = $2;
 
         $self->accounts->{$domain}->{$account} = $self->build_maildir($account, $domain);
+        $self->new_accounts->{$domain}->{$account} = $self->build_maildir($account, $domain);
 
         return $self->build_line($account, $domain);
     }
@@ -189,7 +190,7 @@ sub make_maildirs {
     my $string = '';
     foreach my $domain ( keys %{$accounts} ) {
         foreach my $account ( keys %{$accounts->{$domain}} ) {
-            $self->($account, $domain);
+            $self->make_maildir($account, $domain);
         }
     }
 
@@ -199,9 +200,9 @@ sub make_maildirs {
 sub make_maildir {
     my ($self, $account, $domain) = @_;
 
-    my $base_dir = $self->base_dir;
+    my $base_dir = $self->base_maildir;
     my $maildir = dir( $base_dir, $domain, $account, 'Maildir');
-
+    
     foreach my $subdir ( qw/ cur tmp new / ) {
         my $dir = $maildir->subdir($subdir);
         eval {

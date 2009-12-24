@@ -32,8 +32,8 @@ my $content = $virtual_file->slurp;
 like $content, qr{komatsu\@taro-web.com taro-web.com/komatsu/Maildir};
 
 my $expected_dir = $dir . q{/taro-web.com/komatsu/Maildir};
-ok -e $expected_dir . q{/cur};
-ok -e $expected_dir . q{/new};
-ok -e $expected_dir . q{/tmp};
+ok -e $expected_dir . q{/cur} && rmdir $expected_dir . q{/cur};
+ok -e $expected_dir . q{/new} && rmdir $expected_dir . q{/new};
+ok -e $expected_dir . q{/tmp} && rmdir $expected_dir . q{/tmp};
 
 done_testing;

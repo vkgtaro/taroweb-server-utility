@@ -62,6 +62,7 @@ sub add {
 sub commit {
     my ( $self ) = @_;
 
+    $self->postfix->make_maildirs();
     $self->postfix->write_virtual_file();
     $self->dovecot->write_passwd_file();
 }
