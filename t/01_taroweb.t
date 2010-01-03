@@ -14,7 +14,7 @@ $dfh->close;
 
 my $postfix_virtual_file = file($dir, 'virtual');
 my $pfh = $postfix_virtual_file->openw;
-$pfh->print('vkgtaro@vkgtaro.jp vkgtaro.jp/vkgtaro/Maildir');
+$pfh->print('vkgtaro@vkgtaro.jp vkgtaro.jp/vkgtaro/Maildir/');
 $pfh->close;
 
 my $taroweb = Taroweb->new(
@@ -31,9 +31,9 @@ my $dovecot_passwd = $dovecot_passwd_file->slurp;
 like $dovecot_passwd, qr/^komatsu\@taro-web.com:{SSHA}/;
 
 my $postfix_virtual = $postfix_virtual_file->slurp;
-like $postfix_virtual, qr{komatsu\@taro-web.com taro-web.com/komatsu/Maildir};
+like $postfix_virtual, qr{komatsu\@taro-web.com taro-web.com/komatsu/Maildir/};
 
-my $expected_dir = $dir . q{/taro-web.com/komatsu/Maildir};
+my $expected_dir = $dir . q{/taro-web.com/komatsu/Maildir/};
 ok -e $expected_dir . q{/cur} && rmdir $expected_dir . q{/cur};
 ok -e $expected_dir . q{/new} && rmdir $expected_dir . q{/new};
 ok -e $expected_dir . q{/tmp} && rmdir $expected_dir . q{/tmp};
