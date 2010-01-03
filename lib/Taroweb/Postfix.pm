@@ -142,7 +142,7 @@ sub build_line {
 sub build_maildir {
     my ( $self, $account, $domain ) = @_;
 
-    return sprintf "%s/%s/Maildir", $domain, $account;
+    return sprintf "%s/%s/Maildir/", $domain, $account;
 }
 
 sub write_virtual_file {
