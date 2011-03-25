@@ -22,6 +22,18 @@ subtype 'MailDir'
     => as 'Object'
     => where { $_->isa('Path::Class::Dir') };
 
+coerce 'PostfixFile'
+    => from 'Str'
+    => via { file($_) };
+
+coerce 'PostfixLock'
+    => from 'Str'
+    => via { my $lock = file($_); $lock->openw; };
+
+coerce 'MailDir'
+    => from 'Str'
+    => via { dir($_) };
+
 has base_maildir => (
     is => 'rw',
     isa => 'MailDir',
@@ -58,18 +70,6 @@ has comments => (
     is => 'rw',
     isa => 'Str',
 );
-
-coerce 'PostfixFile'
-    => from 'Str'
-    => via { file($_) };
-
-coerce 'PostfixLock'
-    => from 'Str'
-    => via { my $lock = file($_); $lock->openw; };
-
-coerce 'MailDir'
-    => from 'Str'
-    => via { dir($_) };
 
 __PACKAGE__->meta->make_immutable;
 

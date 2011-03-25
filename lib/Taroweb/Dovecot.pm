@@ -10,8 +10,9 @@ use Email::Valid;
 use File::Copy;
 use Fcntl qw(:flock);
 use Path::Class;
+use Path::Class::File;
 
-subtype 'DocecotFile'
+subtype 'DovecotFile'
     => as 'Object'
     => where { $_->isa('Path::Class::File') };
 
@@ -19,9 +20,17 @@ subtype 'DovecotLock'
     => as 'Object'
     => where { $_->isa('IO::File') };
 
+coerce 'DovecotFile'
+    => from 'Str'
+    => via { file($_) };
+
+coerce 'DovecotLock'
+    => from 'Str'
+    => via { my $lock = file($_); $lock->openw; };
+
 has passwd_file => (
     is => 'rw',
-    isa => 'DocecotFile',
+    isa => 'DovecotFile',
     coerce => 1,
 );
 
@@ -42,14 +51,6 @@ has comments => (
     is => 'rw',
     isa => 'Str',
 );
-
-coerce 'DocecotFile'
-    => from 'Str'
-    => via { file($_) };
-
-coerce 'DovecotLock'
-    => from 'Str'
-    => via { my $lock = file($_); $lock->openw; };
 
 __PACKAGE__->meta->make_immutable;
 
